@@ -41,33 +41,40 @@ function buildMenu() {
         {
             text: "Start Game", id: menuItemCount++, action: function () {
                 clearScreen();
-                let innbetween = createInnBetweenScreen();
-                innbetween.init(`SHIP PLACMENT\nFirst player get ready.\nPlayer two look away`, () => {
+                if (process.stdout.rows > 31 && process.stdout.columns > 68){
+                    let innbetween = createInnBetweenScreen();
+                    innbetween.init(`SHIP PLACMENT\nFirst player get ready.\nPlayer two look away`, () => {
 
-                    let p1map = createMapLayoutScreen();
-                    p1map.init(FIRST_PLAYER, (player1ShipMap) => {
+                        let p1map = createMapLayoutScreen();
+                        p1map.init(FIRST_PLAYER, (player1ShipMap) => {
 
 
-                        let innbetween = createInnBetweenScreen();
-                        innbetween.init(`SHIP PLACMENT\nSecond player get ready.\nPlayer one look away`, () => {
-                            let p2map = createMapLayoutScreen();
-                            p2map.init(SECOND_PLAYER, (player2ShipMap) => {
-                                return createBattleshipScreen(player1ShipMap, player2ShipMap);
-                            })
-                            return p2map;
+                            let innbetween = createInnBetweenScreen();
+                            innbetween.init(`SHIP PLACMENT\nSecond player get ready.\nPlayer one look away`, () => {
+                                let p2map = createMapLayoutScreen();
+                                p2map.init(SECOND_PLAYER, (player2ShipMap) => {
+                                    return createBattleshipScreen(player1ShipMap, player2ShipMap);
+                                })
+                                return p2map;
+                            });
+                            return innbetween;
                         });
-                        return innbetween;
-                    });
 
-                    return p1map;
+                        return p1map;
 
-                }, 3);
-                currentState.next = innbetween;
-                currentState.transitionTo = "Map layout";
+                    }, 3);
+                    currentState.next = innbetween;
+                    currentState.transitionTo = "Map layout";
+                } else {
+                    print("Your console is too small...");
+                    setTimeout(quit, 1500);
+                }
             }
         },
-        { text: "Exit Game", id: menuItemCount++, action: function () { print(ANSI.SHOW_CURSOR); clearScreen(); process.exit(); } },
+        { text: "Exit Game", id: menuItemCount++, action: function () { print(ANSI.SHOW_CURSOR); clearScreen(); quit(); } },
     ];
 }
 
-
+function quit(){
+    process.exit();
+}
