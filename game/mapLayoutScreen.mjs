@@ -118,8 +118,6 @@ function createMapLayoutScreen() {
                 if (this.canPlaceShip()) {
                     this.placeShip();
                     this.currentShipIndex++;
-                    this.cursorColumn = 0;
-                    this.cursorRow = 0;
                     if (this.currentShipIndex < this.ships.length) {
                         this.ship = this.ships[this.currentShipIndex];
                     } else {
