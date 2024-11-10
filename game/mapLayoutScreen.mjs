@@ -1,9 +1,11 @@
 import { GAME_BOARD_DIM } from "../consts.mjs";
 import { ANSI } from "../utils/ansi.mjs";
 import { print, clearScreen } from "../utils/io.mjs";
-import units from "./units.mjs";
 import KeyBoardManager from "../utils/io.mjs";
 import { create2DArrayWithFill } from "../utils/array.mjs"
+import DICTIONARY from "../language.mjs";
+import language from "../game.mjs";
+import unitsCreation from "./units.mjs";
 
 ANSI.SEA__AND_SHIP = '\x1b[38;5;83;48;5;39m';
 ANSI.SEA = '\x1b[48;5;39m';
@@ -21,7 +23,7 @@ function createMapLayoutScreen() {
         currentShipIndex: 0,
         isHorizontal: false,
         map: create2DArrayWithFill(GAME_BOARD_DIM),
-        ships: [...Object.values(units)],
+        ships: [...Object.values(unitsCreation(language))],
         placedShips: [],
         transitionFn: null,
 
@@ -137,7 +139,7 @@ function createMapLayoutScreen() {
             clearScreen();
 
 
-            let output = `${ANSI.TEXT.BOLD}${ANSI.COLOR.YELLOW}Ship Placement Phase\n\n${ANSI.TEXT.BOLD_OFF}${ANSI.RESET}`;
+            let output = language.SHIP_PLACEMENT;
 
             output += '  ';
             for (let i = 0; i < GAME_BOARD_DIM; i++) {
@@ -177,12 +179,12 @@ function createMapLayoutScreen() {
             }
             output += '\n\n';
 
-            output += `${ANSI.TEXT.BOLD}${ANSI.COLOR.YELLOW}Controls:${ANSI.TEXT.BOLD_OFF}${ANSI.RESET}\n`;
-            output += 'Arrow keys: Move cursor\n';
-            output += 'R: Rotate ship\n';
-            output += 'Enter: Place ship\n';
+            output += language.CONTROLS;
+            output += language.CONTROLS_ARROWS;
+            output += language.CONTROLS_R;
+            output += language.CONTROLS_ENTER;
 
-            output += `\n${ANSI.TEXT.BOLD}${ANSI.COLOR.YELLOW}Ships to place:${ANSI.TEXT.BOLD_OFF}${ANSI.RESET}\n`;
+            output += language.SHIP_LIST;
             this.ships.forEach((ship, index) => {
                 const status = index < this.currentShipIndex ? '✓' :
                     index === this.currentShipIndex ? '>' : ' ';
