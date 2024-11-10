@@ -7,17 +7,17 @@ import { ANSI } from "../utils/ansi.mjs";
 
 ANSI.SEA = '\x1b[48;5;39m';
 
-const creteBatleshipScreen = () => {
+const createBattleshipScreen = (firstPlayerBoard, secondPlayerBoard) => {
 
     let currentPlayer = FIRST_PLAYER;
-    let firstPlayerBoard = null;
-    let secondPlayerBoard = null;
     let cursorColumn = 0;
     let cursorRow = 0;
     let mapOne = create2DArrayWithFill(GAME_BOARD_DIM);
     let mapTwo = create2DArrayWithFill(GAME_BOARD_DIM);
-    let currentBoard = mapOne;
-    let oponentBoard = mapTwo;
+    let currentBoard  = firstPlayerBoard;
+    let oponentBoard = secondPlayerBoard;
+    let currentShotBoard = mapOne;
+    let opposingShotBoard = mapTwo;
     let hit = 1;
     let miss = 2;
 
@@ -25,11 +25,15 @@ const creteBatleshipScreen = () => {
     function swapPlayer() {
         currentPlayer *= -1;
         if (currentPlayer == FIRST_PLAYER) {
-            currentBoard = mapTwo;
-            oponentBoard = mapOne;
+            currentBoard = firstPlayerBoard;
+            oponentBoard = secondPlayerBoard;
+            currentShotBoard = mapOne;
+            opposingShotBoard = mapTwo;
         } else {
-            currentBoard = mapOne;
-            oponentBoard = mapTwo;
+            currentBoard = secondPlayerBoard;
+            oponentBoard = firstPlayerBoard;
+            currentShotBoard = mapTwo;
+            opposingShotBoard = mapOne;
         }
     }
 
@@ -40,14 +44,12 @@ const creteBatleshipScreen = () => {
         next: null,
         transitionTo: null,
 
-
         init: function (firstPBoard, secondPBoard) {
-            firstPlayerBoard = firstPBoard;
-            secondPlayerBoard = secondPBoard;
+             firstPlayerBoard = firstPBoard;
+             secondPlayerBoard = secondPBoard;
         },
 
         update: function (dt) {
-            //this.isDrawn = false;
             if (KeyBoardManager.isUpPressed()) {
                 cursorRow = Math.max(0, cursorRow - 1);
                 this.isDrawn = false;
@@ -67,21 +69,64 @@ const creteBatleshipScreen = () => {
 
             if (KeyBoardManager.isEnterPressed()) {
                 this.isDrawn = false;
-                if (currentPlayer == FIRST_PLAYER){
-                    if (secondPlayerBoard[cursorRow][cursorColumn] == 0){
-                        mapOne[cursorRow][cursorColumn] = miss;
-                    } else {
-                        mapOne[cursorRow][cursorColumn] = hit;
-                    }
+                let row = cursorRow;
+                let column = cursorColumn;
+                if (currentBoard == null){
+                    currentBoard = firstPlayerBoard;
+                    oponentBoard = secondPlayerBoard;
+                }
+
+                if (currentBoard[row][column] == 0){
+                    currentShotBoard[row][column] = miss;
                 } else {
-                    if (firstPlayerBoard[cursorRow][cursorColumn] == 0){
-                        mapTwo[cursorRow][cursorColumn] = miss;
+                    currentShotBoard[row][column] = hit;
+                    if (currentPlayer == FIRST_PLAYER){
+                        firstPlayerBoard[row][column] = 0;
+                        let winner = true;
+                        for (let x = 0; x < GAME_BOARD_DIM; x++){
+                            for (let y = 0; y < GAME_BOARD_DIM; y++){
+                                if (firstPlayerBoard[x][y] != 0){
+                                    winner = false;
+                                }
+                            }
+                        }
+                        if (winner == true){
+                            clearScreen();
+                            print(language.PLAYER_1_WINNER);
+                            this.isDrawn = true;
+                            setTimeout(mainMenu, 2000);
+
+                            function mainMenu(){
+                                this.next = mainMenuScene;
+                                this.transitionTo = "Main menu";
+                            }
+                        }
                     } else {
-                        mapTwo[cursorRow][cursorColumn] = hit;
+                        secondPlayerBoard[row][column] = 0;
+                        let winner = true;
+                        for (let x = 0; x < GAME_BOARD_DIM; x++){
+                            for (let y = 0; y < GAME_BOARD_DIM; y++){
+                                if (secondPlayerBoard[x][y] != 0){
+                                    winner = false;
+                                }
+                            }
+                        }
+                        if (winner == true){
+                            clearScreen();
+                            print(language.PLAYER_2_WINNER);
+                            this.isDrawn = true;
+                            setTimeout(mainMenu, 2000);
+
+                            function mainMenu(){
+                                this.next = mainMenuScene;
+                                this.transitionTo = "Main menu";
+                            }
+                        }
                     }
                 }
                 
                 swapPlayer();
+                this.isDrawn = false;
             }
         },
 
@@ -102,7 +147,7 @@ const creteBatleshipScreen = () => {
                     output += `${String(y + 1).padStart(2, ' ')} `;
 
                     for (let x = 0; x < GAME_BOARD_DIM; x++){
-                        const cell = currentBoard[y][x];
+                        const cell = currentShotBoard[y][x];
 
                         if (y == cursorRow && x == cursorColumn){
                             output += ANSI.COLOR.GREEN + '█' + ANSI.RESET + ' ';   
@@ -129,10 +174,10 @@ const creteBatleshipScreen = () => {
 
 
                 print (output);
-                print("There should be a battleship game here");
+                print(firstPlayerBoard);
+                print(secondPlayerBoard);
                 }
 
-            
 
 
             }
@@ -140,4 +185,4 @@ const creteBatleshipScreen = () => {
 
     }
 
-export default creteBatleshipScreen;
+export default  createBattleshipScreen;

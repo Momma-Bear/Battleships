@@ -23,6 +23,8 @@ const DICTIONARY = {
         SHIP_DESTROYER : "Destroyer",
         SHOOTING_PHASE : `${ANSI.TEXT.BOLD}${ANSI.COLOR.YELLOW}Shooting Phase\n\n${ANSI.TEXT.BOLD_OFF}${ANSI.RESET}`,
         PLAYER : "Player ",
+        PLAYER_1_WINNER : "Player 1 won the game!",
+        PLAYER_2_WINNER : "Player 2 won the game!",
         CURRENT_SHOOTER : " is shooting. Pick a coordinate",
         CONSOLE_ERROR : "Your console is too small...",
         EXIT : "Exiting game..."
@@ -49,6 +51,8 @@ const DICTIONARY = {
         SHIP_DESTROYER : "Destroyer",
         SHOOTING_PHASE : `${ANSI.TEXT.BOLD}${ANSI.COLOR.YELLOW}Skyte Fase\n\n${ANSI.TEXT.BOLD_OFF}${ANSI.RESET}`,
         PLAYER : "Spiller ",
+        PLAYER_1_WINNER : "Spiller 1 vant!",
+        PLAYER_2_WINNER : "Spiller 2 vant!",
         CURRENT_SHOOTER: " skyter. Velg koordinater",
         CONSOLE_ERROR : "Konsollen din er for liten...",
         EXIT : "Avslutter spill..."
